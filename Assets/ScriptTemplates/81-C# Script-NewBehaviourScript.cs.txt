@@ -1,0 +1,20 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+
+namespace BAW
+{
+	public class #SCRIPTNAME# : MonoBehaviour 
+	{
+		void Awake () 
+		{
+			#NOTRIM#
+		}
+		
+		void Start () 
+		{
+			#NOTRIM#
+		}	
+	}
+}

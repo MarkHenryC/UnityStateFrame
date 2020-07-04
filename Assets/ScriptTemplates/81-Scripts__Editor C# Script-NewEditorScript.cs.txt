@@ -1,0 +1,28 @@
+﻿using UnityEngine;
+using UnityEditor;
+
+// We have to remove the Editor part of the name,
+// because in Unity script templates it uses only
+// the file name to define the class. In an editor
+// script we need to refer to the target class, but
+// can't use that name here as it'll cause a class
+// with the target class name.
+namespace BAW
+{
+	[CustomEditor(typeof(#SCRIPTNAME#), true)]
+	public class #SCRIPTNAME#Editor : Editor 
+	{
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            #SCRIPTNAME# script = (#SCRIPTNAME#)target;
+
+            if (GUILayout.Button("Something"))
+            {
+                // Call method here
+            }
+        }
+
+	}
+}

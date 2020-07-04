@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0f1c31bb9f1f34dbf9ae33b3448a79, type: 3}
+  m_Name: ActivitySettings
+  m_EditorClassIdentifier: 
+  navigationOverride: 0
+  masterNavOverride: 0
+  startActivityIndex: 0
+  AllowSkipScenes: 0
+  infoDisplayTime: 5
+  shortDisplayTime: 3
+  titleDisplayTime: 7.5
+  graduationDisplayTime: 10
+  interactionGapTimeout: 1.5
+  infoLengthUnit: 100
+  defaultVideoName: 
+  overrides:
+    masterNavOverride: 0
+    allowSkipScenes: 0
+    startActivityIndex: 0
+    challengePlayerSpeed: 0
+    challengeDamageCapacity: 0
+    debugFlag: 0
+    showTouchpadY: 0
+  masterDebugFlag: 0
+  showReticleAlways: 0
+  currentHealth: 0
+  minimumAngleForTeleport: -0.95
+  buttonFromCameraDistance: 2
+  infoPanelFromCameraDistance: 2.1
+  closeupPanelFromCameraDistance: 0.75
+  infoPanelYOffset: 1
+  slowFrameInterval: 0.5
+  testing: 0
+  localReturnTime: 1
+  raycastDistance: 20
+  beamExtensionSpeed: 100
+  objectRotationSpeed: 36
+  touchpadXDeadspot: 0.25
+  minBeamLength: 1
+  maxBeamLength: 19
+  interactableTarget:
+    serializedVersion: 2
+    m_Bits: 0
+  inset: 0
+  rewardSound: {fileID: 0}
+  overrideCode: 0
+  lowPassSamples: 0
+  challengePlayerSpeed: 0.01
+  WIN_VIDEO_EXT: .mp4
+  GO_VIDEO_EXT: .mkv
+  chosenAvatar: 
+  avatarModel: 
+  avatarGender: 0
+  avatarSkinTone: 0
+  useFlames: 0
+  clothingSelectorReport: 
+  currentActivityScore: 0
+  currentActivityBonusPoints: 0
+  currentExperienceMaxValue: 0
+  currentExperienceTotalScore: 0
+  currentExperienceBonusPoints: 0
+  passUnitValue: 0.85
+  cachedPosition: {x: 0, y: 0, z: 0}
+  cachedRotation: {x: 0, y: 0, z: 0, w: 0}
+  KITCHEN_VIDEO_GO: kitchen1.mkv
+  ChefVideos: []
+  playerStartPosition: {x: 0, y: 0, z: -6.13}
+  sweepTargetTime: 0.5
+  sweepMultiplier: 1
+  broomRotationSpeed: 1
+  sweepPercent: 0
+  fetchBroom: 0
+  timeToCompleteSweep: 20
+  sweepScore: 0
+  timeToWashDishes: 30
+  dishwashingScore: 0
+  damage: 0
+  totalDishes: 0
+  dishesDelivered: 0
+  dishesDropped: 0
+  timeToDeliverDishes: 45
+  challengeScore: 0
+  challengeDamageCapacity: 13
+  timeToCutVeges: 15
+  cuttingScore: 0
+  cookChipsScore: 0
+  saladScore: 0
+  fishFryScore: 0
+  MechanicExperienceMaxValue: 0
+  MechanicExperienceTotalScore: 0
+  MechanicExperienceBonusPoints: 0
+  chosenHairColor: {r: 0, g: 0, b: 0, a: 0}
+  cacheRaycastDistance: 0
+  cacheBeamExtensionSpeed: 0
+  cacheAmbientLight: {r: 0, g: 0, b: 0, a: 0}

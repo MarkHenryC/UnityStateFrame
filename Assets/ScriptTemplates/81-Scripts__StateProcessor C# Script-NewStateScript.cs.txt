@@ -1,0 +1,95 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace BAW
+{
+	public class #SCRIPTNAME# : StateProcessor 
+	{
+		[TextArea]
+        public string startPrompt;
+		public string continuePrompt;    
+        public InfoPanel infoPanel;
+        public ButtonPanel continueButton;
+		public bool introOnly;
+		public bool dismissOnAction;
+
+		private bool started, finished;
+
+        public override void Enter(ActivityBase a, StateProcessor previousState)
+        {
+            base.Enter(a, previousState);
+
+            ControllerInput.Instance.PointerMode = ControllerInput.EnPointerMode.Pointing;
+
+            if (infoPanel)
+            {
+                infoPanel.SetText(startPrompt);
+
+                if (introOnly)
+                {
+					ControllerInput.Instance.PointerMode = ControllerInput.EnPointerMode.None;
+					
+					if (!clickToContinue)
+						infoPanel.ShowFor(ActivitySettings.Asset.TextDisplayTime(startPrompt), () =>
+						{
+							PostExit(true);
+						});
+                }
+            }
+
+			if (continueButton)
+				continueButton.Activate(continuePrompt, (continueButton) =>
+				{
+					ActivityManager.Instance.FadeOutThen(() => { ActivityManager.Instance.Next(); });
+				});
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+			if (infoPanel)
+				infoPanel.Show(false);
+			if (continueButton)
+				continueButton.Show(false);
+        }
+
+        public override void OnFrame(VrEventInfo processedVrEventInfo)
+        {
+            base.OnFrame(processedVrEventInfo);
+
+			if (finished)
+                return;
+
+            switch (processedVrEventInfo.EventType)
+            {
+                case VrEventInfo.VrEventType.TriggerDown:
+                case VrEventInfo.VrEventType.TouchpadClickDown:
+                    if (!started)
+                    {
+                        started = true;
+                        if (dismissOnAction)
+                        {
+                            if (infoPanel && !introOnly)
+                                infoPanel.Show(false);
+                        }
+                        if (timeToCompleteActivity > 0f)
+                            StartTimer();
+                    }
+                    break;
+            }            
+        }
+	
+	    protected override void OnTimedOut()
+        {
+            base.OnTimedOut();
+            Finish();
+        }
+
+        private void Finish()
+        {
+			finished = true;
+            PostExit(true);
+        }
+	}
+}
