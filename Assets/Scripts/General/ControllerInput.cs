@@ -25,7 +25,7 @@ namespace QS
         public GameObject moveGuide;
         public UiPanel backButtonPanel;
         public TextMeshProUGUI readout;
-        public OVRScreenFadeMod screenFade;
+        public ScreenFader screenFade;
 
         private const float MousewheelRotationCoeff = 20f;
         private const int periodicUiUpdate = 20;
@@ -105,6 +105,10 @@ namespace QS
 
             if (!ActivitySettings.Asset.showTouchpadY)
                 readout.gameObject.SetActive(false);
+
+            OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
+            OVRManager.display.displayFrequency = 72.0f;
+
         }
 
         private void Update()

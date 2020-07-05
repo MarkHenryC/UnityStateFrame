@@ -11,7 +11,8 @@ namespace QS
         public ActivityBase[] activities;
         public SceneLoader sceneLoader;
         public GameObject commonVisuals; // Need to switch this off to prevent flashing on scene change
-        
+        public Fader screenFader;
+
         [Header("If non-null, overrides numeric sceneindex. No need to include 'Activity' prefix")]
         [HideInInspector]
         public string startActivityName;
@@ -27,9 +28,6 @@ namespace QS
         {
             base.Awake();
 
-            OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
-            OVRManager.display.displayFrequency = 72.0f;
-
             activities = Utils.GetNonExcludedActivities<ActivityBase>(transform);
 
             ClearVisuals();            
@@ -38,7 +36,8 @@ namespace QS
 
             if (startActivityName.Usable())
             {
-                Transform startT = transform.Find("Activity" + startActivityName) ?? transform.Find(startActivityName);
+                Transform startT = transform.Find("Activity" + startActivityName);
+                if (!startT) startT = transform.Find(startActivityName);
                 if (startT)
                 {
                     for (int i = 1; i < activities.Length; i++)
@@ -92,16 +91,7 @@ namespace QS
 
         public void FadeOutThen(Action a)
         {
-            if (ControllerInput.Instance.screenFade)
-                ControllerInput.Instance.screenFade.FadeOutThen(a);
-            else
-            {
-                Debug.LogWarning("No fader in FadeOutThen call");
-                if (a != null)
-                    a();
-                else
-                    Debug.LogWarning("No action in FadeOutThen");
-            }
+            screenFader.FadeOut(a);
         }
 
         public ActivityBase CurrentActivity
