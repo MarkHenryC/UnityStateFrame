@@ -420,11 +420,6 @@ namespace QS
             return Input.GetMouseButton(1);
         }
 
-        public Vector2 GetTouchpadPosition()
-        {
-            return OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-        }
-
         /// <summary>
         /// Teleport but don't change Y coord. Because of
         /// Rift compatibility, OVRPlayerController doesn't
@@ -458,13 +453,6 @@ namespace QS
         public void SetPlayerAspect(Transform t, bool forceCameraAlign = false)
         {
             player.Set(t);
-            if (forceCameraAlign)
-                AlignCamera();
-        }
-
-        public void AlignCamera()
-        {
-            OVRManager.display.RecenterPose();
         }
 
         public void ShowHud(bool showAvatar = true, bool showTime = false, bool showLife = false)
