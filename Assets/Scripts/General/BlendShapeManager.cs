@@ -29,11 +29,6 @@ namespace QS
         {
             if (skinnedMeshRenderers.Length > 0)
                 blendshapeCount = skinnedMeshRenderers[0].sharedMesh.blendShapeCount;
-
-            //for (int d = 0; d < skinnedMeshRenderers.Length; d++)
-            //{
-            //    Debug.LogFormat("Skin {0} has {1} elements", d, skinnedMeshRenderers[d].sharedMesh.blendShapeCount);
-            //}
         }
 
         public void CreateExpression(string name)

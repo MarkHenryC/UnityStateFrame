@@ -150,7 +150,7 @@ namespace QS
             float unitVal = Utils.UnitValueChallengeScore(score, total);
 
             int activityScore = Utils.ConvertToActivityScore(unitVal);
-            Utils.RegisterActivityScore(activityScore);
+            Utils.RegisterActivityAndUpdateExperience(activityScore);
 
             infoPanel.SetText(string.Format("Your score is {0} out of {1}", activityScore, ActivitySettings.pointsPerChallenge));
             if (unitVal > .85f)

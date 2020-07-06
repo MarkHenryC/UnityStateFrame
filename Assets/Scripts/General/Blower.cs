@@ -49,19 +49,16 @@ namespace QS
             if (onTarget)
             {
                 blowable.Blow(transform.forward, force * forceCoefficient);
-                //isBlowing = true;                
             }
             else if (isBlowing)
             {
                 blowable.EndBlow(taperTime);
-                //isBlowing = false;
             }
         }
 
         private bool OnTarget()
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit, range, blowableMask))
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, range, blowableMask))
             {
                 forceCoefficient = 1f + (range - hit.distance);
                 return true;

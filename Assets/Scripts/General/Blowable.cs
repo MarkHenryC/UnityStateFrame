@@ -8,7 +8,7 @@ namespace QS
         public float damping = .25f;
 
         private Vector3 currentDirection;
-        private Cloth[] hairChunks; // how elegant
+        private Cloth[] strands; // items to be blowin' in the wind
         private bool initialized;
 
         private void Start()
@@ -27,29 +27,29 @@ namespace QS
         /// </summary>
         public void Initialize()
         {
-            if (hairChunks == null || hairChunks.Length == 0)
-                hairChunks = GetComponentsInChildren<Cloth>();            
+            if (strands == null || strands.Length == 0)
+                strands = GetComponentsInChildren<Cloth>();            
             initialized = true;
         }
 
         public void Clear()
         {
-            hairChunks = null;
+            strands = null;
         }
 
         public void Blow(Vector3 direction, float force = 1f)
         {
-            if (hairChunks == null)
+            if (strands == null)
                 return;
 
             currentDirection = direction * force;
-            foreach (Cloth cloth in hairChunks)
+            foreach (Cloth cloth in strands)
                 cloth.externalAcceleration = currentDirection;
         }
 
         public void EndBlow(float taperTime)
         {
-            if (hairChunks == null)
+            if (strands == null)
                 return;
 
             if (taperTime > 0f)
@@ -57,17 +57,17 @@ namespace QS
             else
             {
                 currentDirection = Vector3.zero;
-                foreach (Cloth cloth in hairChunks)
+                foreach (Cloth cloth in strands)
                     cloth.externalAcceleration = currentDirection;
             }
         }
 
         public void SetDamping(float d)
         {
-            if (hairChunks == null)
+            if (strands == null)
                 return;
 
-            foreach (Cloth cloth in hairChunks)
+            foreach (Cloth cloth in strands)
                 cloth.damping = d;
         }
 
@@ -77,7 +77,7 @@ namespace QS
             while (t > 0f)
             {
                 currentDirection = Vector3.Lerp(currentDirection, Vector3.zero, 1f - t / time);
-                foreach (Cloth cloth in hairChunks)
+                foreach (Cloth cloth in strands)
                     cloth.externalAcceleration = currentDirection;
 
                 t -= Time.deltaTime;

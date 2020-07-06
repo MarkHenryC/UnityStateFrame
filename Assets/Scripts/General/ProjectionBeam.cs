@@ -15,6 +15,9 @@ namespace QS
                 initialReticleScale = reticle.transform.localScale;
 
             lineRenderer = GetComponent<LineRenderer>();
+            if (!lineRenderer)
+                lineRenderer = gameObject.AddComponent<LineRenderer>();
+
             DrawLine(Vector3.zero, Vector3.zero); // clear visible beam
         }
 

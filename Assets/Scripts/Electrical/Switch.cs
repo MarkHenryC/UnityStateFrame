@@ -56,9 +56,9 @@ namespace QS
         private Connection GetNext(Connection source)
         {
             if (source == common && ConnectedToCommon)
-                return ConnectedToCommon.to ?? ConnectedToCommon.From;
+                return ConnectedToCommon.to ? ConnectedToCommon.to : ConnectedToCommon.From;
             else if (source == ConnectedToCommon && common)
-                return common.to ?? common.From;
+                return common.to ? common.to : common.From;
             else
                 return null;
         }

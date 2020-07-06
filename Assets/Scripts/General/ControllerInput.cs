@@ -25,7 +25,6 @@ namespace QS
         public GameObject moveGuide;
         public UiPanel backButtonPanel;
         public TextMeshProUGUI readout;
-        public ScreenFader screenFade;
 
         private const float MousewheelRotationCoeff = 20f;
         private const int periodicUiUpdate = 20;
@@ -38,21 +37,15 @@ namespace QS
         private EnPointerMode pointerMode = EnPointerMode.None;
         private Camera mainCam;
         private VrEventInfo vrEventInfo = new VrEventInfo();
-        private Graspable currentGrabbedObject, currentHighlightedObject;
-        private List<Graspable> selectedGrabbables = new List<Graspable>();
         private Vector3 lastControllerPosition, lastControllerDirection; // For quiclk queries
         private Vector3 calcOffset = Vector3.zero;
-        private Rigidbody playerPhysics;
-        private CapsuleCollider playerCollider; // need to switch off when in car parking mode
         private bool flagTriggerRelease;
         private bool freeMove;
         private Quaternion globalPointerRot;
         private bool paused;
         private float unscaledTimer;
         private float simRotationAngle;
-        private Transform cameraPos;
-        // Caching for speed as it's used every frame
-        private int lowPassSamples;
+
         private int periodicFrameCounter;
         private bool touchdown; // Monitor via clicks
 
@@ -65,50 +58,25 @@ namespace QS
         public bool TouchIsDown => IsTouchpadDown();
         public bool TouchIsTouched => IsTouchpadTouched();
 
-        private class QData
-        {
-            public Vector3 forward, up;
-            public QData(Vector3 f, Vector3 u)
-            {
-                forward = f;
-                up = u;
-            }
-
-            public QData() : this(new Vector3(), new Vector3())
-            {
-
-            }
-
-            public Quaternion ToQ()
-            {
-                return Quaternion.LookRotation(forward, up);
-            }
-        }
-
         private void Start()
         {
             mainCam = Camera.main;
-            playerPhysics = player.GetComponent<Rigidbody>();
-            if (playerPhysics)
+            PlayerRb = player.GetComponent<Rigidbody>();
+            if (PlayerRb)
                 LockPlayer(true);
-            playerCollider = player.GetComponent<CapsuleCollider>();
-            cameraPos = player.Find("CenterEyeAnchor");
+            PlayerCollider = player.GetComponent<CapsuleCollider>();
+            CameraPos = player.Find("CenterEyeAnchor");
+            if (!CameraPos)
+                CameraPos = mainCam.transform;
             PointerMode = EnPointerMode.Pointing;
-            lowPassSamples = ActivitySettings.Asset.lowPassSamples;
-
-            Debug.LogFormat("Start called in ControllerInput in scene {0}", SceneManager.GetActiveScene().name);
 
             Debug.Log("Device present? " + UnityEngine.XR.XRDevice.isPresent);
             Debug.Log("VR enabled? " + UnityEngine.XR.XRSettings.enabled);
 
             ActivitySettings.Asset.ResetCurrentExperienceScores();
 
-            if (!ActivitySettings.Asset.showTouchpadY)
+            if (readout && !ActivitySettings.Asset.showTouchpadY)
                 readout.gameObject.SetActive(false);
-
-            OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High;
-            OVRManager.display.displayFrequency = 72.0f;
-
         }
 
         private void Update()
@@ -153,7 +121,10 @@ namespace QS
             globalPointerRot = Quaternion.Euler(camAngles);
 
             globalPointerPos = mainCam.transform.position + calcOffset;
-            pointerDir = mainCam.transform.parent.TransformDirection(mainCam.transform.localRotation * Vector3.forward);
+            if (mainCam.transform.parent)
+                pointerDir = mainCam.transform.parent.TransformDirection(mainCam.transform.localRotation * Vector3.forward);
+            else
+                pointerDir = mainCam.transform.localRotation * Vector3.forward;
             angularAcceleration = Vector3.zero;
 
             if (vrEventInfo.Connected)
@@ -299,10 +270,9 @@ namespace QS
                 vrEventInfo.TouchpadPosition = ConvertToTouchpadCoords(Input.mousePosition);
 #else
             vrEventInfo.TouchpadPosition = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-#endif
             ShowTouchpadFeedback(vrEventInfo.TouchpadPosition.y);
-
-            if (readout.gameObject.activeSelf)
+#endif
+            if (readout && readout.gameObject.activeSelf)
             {
                 if (++periodicFrameCounter % periodicUiUpdate == 0)
                     readout.text = string.Format("y: {0:f}", vrEventInfo.TouchpadPosition.y);
@@ -344,55 +314,12 @@ namespace QS
             if (freeMove && IsTouchpadDown())
             {
                 Vector3 targetPos = Utils.GetOneAxisMovement(vrEventInfo);
-                playerPhysics.MovePosition(targetPos);
-                if (!moveGuide.activeSelf)
+                PlayerRb.MovePosition(targetPos);
+                if (moveGuide && !moveGuide.activeSelf)
                     moveGuide.SetActive(true);
             }
-            else if (moveGuide.activeSelf)
+            else if (moveGuide && moveGuide.activeSelf)
                 moveGuide.SetActive(false);
-        }
-
-        /// <summary>
-        /// I just can't get this to work reliably. The readings on 
-        /// the touchpad, especially when it's clicked down,
-        /// are inconsistent and inaccurate, sometimes reading
-        /// y == 0.0 when it's well above the mid-mark (but
-        /// not at the boundary of the sensor) in either the
-        /// positive or negative direction. The click sensor,
-        /// however, is always accurate and touch without 
-        /// click is not too bad - but not perfect. Swiping
-        /// is not such an issue as I'm reading differentials
-        /// rather than absolute vertical coordinates.
-        /// These issues are well-reported in the Oculus
-        /// developer forum, without any interest by Oculus
-        /// in fixing. General conclusion is that supporting use of
-        /// the trackpad as a 4-way game controller is of
-        /// no interest to Oculus, as the Go is not a game device.
-        /// UPDATE: now the Go is not any sort of device.
-        /// </summary>
-        private void _deprecated_FreeMove()
-        {
-            bool showGuide = false;
-            if (freeMove && touchdown)
-            {
-                Vector3 targetPos = Utils.GetOneAxisMovement(vrEventInfo);
-                playerPhysics.MovePosition(targetPos);
-
-                if (vrEventInfo.TouchpadPosition.y != 0)
-                {
-                    showGuide = true;
-
-                    if (vrEventInfo.TouchpadPosition.y < 0f)
-                        moveGuide.transform.localRotation = Quaternion.Euler(0, 180f, 0);
-                    else
-                        moveGuide.transform.localRotation = Quaternion.identity;
-                }
-            }
-
-            if (moveGuide.activeSelf && !showGuide)
-                moveGuide.SetActive(false);
-            else if (!moveGuide.activeSelf && showGuide)
-                moveGuide.SetActive(true);
         }
 
         public bool RaycasterActive { get; set; }
@@ -450,23 +377,24 @@ namespace QS
 
         public void LockPlayer(bool locked, bool lockY = true)
         {
-            playerPhysics.Sleep();
+            PlayerRb.Sleep();
             freeMove = !locked;
-            moveGuide.SetActive(freeMove);
+            if (moveGuide)
+                moveGuide.SetActive(freeMove);
             if (locked)
-                playerPhysics.constraints = RigidbodyConstraints.FreezeAll;
+                PlayerRb.constraints = RigidbodyConstraints.FreezeAll;
             else
             {
                 if (lockY)
-                    playerPhysics.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+                    PlayerRb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
                 else
-                    playerPhysics.constraints = RigidbodyConstraints.FreezeRotation;
+                    PlayerRb.constraints = RigidbodyConstraints.FreezeRotation;
             }
         }
 
         public void SetGrabbedObject(Graspable g)
         {
-            Graspable oldGrabbable = currentGrabbedObject;
+            Graspable oldGrabbable = GrabbedObject;
 
             // Don't set if already set
             if (oldGrabbable != g)
@@ -474,11 +402,11 @@ namespace QS
                 if (oldGrabbable)
                     oldGrabbable.Clear();
 
-                currentGrabbedObject = g;
+                GrabbedObject = g;
             }
         }
 
-        public Graspable GrabbedObject => currentGrabbedObject;
+        public Graspable GrabbedObject { get; private set; }
 
         public Vector3 ControllerPosition => lastControllerPosition;
 
@@ -486,36 +414,36 @@ namespace QS
 
         public void SetHighlightedObject(Graspable g)
         {
-            currentHighlightedObject = g;
+            HighlightedObject = g;
         }
 
-        public Graspable HighlightedObject => currentHighlightedObject;
+        public Graspable HighlightedObject { get; private set; }
 
         public void AddToSelectedGrabbables(Graspable grabbable)
         {
-            if (!selectedGrabbables.Contains(grabbable))
-                selectedGrabbables.Add(grabbable);
+            if (!SelectedGrabbables.Contains(grabbable))
+                SelectedGrabbables.Add(grabbable);
         }
 
-        public List<Graspable> SelectedGrabbables => selectedGrabbables;
+        public List<Graspable> SelectedGrabbables { get; } = new List<Graspable>();
 
         public void ClearSelectedGrabbables()
         {
-            if (selectedGrabbables.Count > 0)
+            if (SelectedGrabbables.Count > 0)
             {
-                foreach (Graspable g in selectedGrabbables)
+                foreach (Graspable g in SelectedGrabbables)
                     g.Clear();
 
-                selectedGrabbables.Clear();
+                SelectedGrabbables.Clear();
             }
         }
 
         public void RemoveFromSelectedGrabbables(Graspable g)
         {
             int index = -1;
-            for (int i = 0; i < selectedGrabbables.Count; i++)
+            for (int i = 0; i < SelectedGrabbables.Count; i++)
             {
-                if (selectedGrabbables[i] == g)
+                if (SelectedGrabbables[i] == g)
                 {
                     index = i;
                     break;
@@ -523,10 +451,10 @@ namespace QS
             }
 
             if (index >= 0)
-                selectedGrabbables.RemoveAt(index);
+                SelectedGrabbables.RemoveAt(index);
         }
 
-        public Transform CameraPos => cameraPos;
+        public Transform CameraPos { get; private set; }
 
         public bool IsTriggerDown()
         {
@@ -587,9 +515,9 @@ namespace QS
 
         public Transform Player => player;
 
-        public Rigidbody PlayerRb => playerPhysics;
+        public Rigidbody PlayerRb { get; private set; }
 
-        public CapsuleCollider PlayerCollider => playerCollider;
+        public CapsuleCollider PlayerCollider { get; private set; }
 
         public void SetPlayerAspect(Transform t, bool forceCameraAlign = false)
         {

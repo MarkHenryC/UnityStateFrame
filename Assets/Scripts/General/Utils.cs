@@ -10,21 +10,18 @@ namespace QS
         private static readonly RaycastHit[] physicsRaycasts = new RaycastHit[5];
         private static Ray ray = new Ray();
 
-        private static readonly bool dampingInited;
         private static int lowPassSamples;
         private static QData[] qSamples;
 
-        private const float TouchpadMinYForward = 0.2f;
-        private const float TouchpadMaxYBackward = -0.9f;
         private const double TWOPI = 6.2831853071795865;
         private const double RAD2DEG = 57.2957795130823209;
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
-        public static string SEP = @"\";
-        private static readonly string RAW_VIDEO_PATH = @"%LOCALAPPDATA%\BusyMarketing\";
+        public const string SEP = @"\";
+        private const string RAW_VIDEO_PATH = @"%LOCALAPPDATA%\360Video\";
 #else
-        public static string SEP = @"/";
-        private static string RAW_VIDEO_PATH = "/storage/emulated/0/BusyMarketing/";
+        public const string SEP = @"/";
+        private const string RAW_VIDEO_PATH = "/storage/emulated/0/360Video/";
 #endif
         private static string _resolvedVideoPath;
 
@@ -119,17 +116,7 @@ namespace QS
         }
 
         /// <summary>
-        /// Keep support for chef experience
-        /// </summary>
-        /// <param name="score"></param>
-        public static void RegisterActivityScore(int score)
-        {
-            ActivitySettings.Asset.currentExperienceTotalScore += score;
-            ActivitySettings.Asset.currentExperienceMaxValue += ActivitySettings.pointsPerChallenge;
-        }
-
-        /// <summary>
-        /// Simplified version for later experiences. Call only once per activity.
+        /// Call only once per activity.
         /// Intended for end of single-run activities.
         /// </summary>
         /// <param name="rawScore"></param>
@@ -158,7 +145,6 @@ namespace QS
         }
 
         /// <summary>
-        ///  For later versions which update currentActivity.
         ///  Ensures score is not less than zero and calculates bonus
         ///  based on overflow
         /// </summary>
@@ -271,7 +257,8 @@ namespace QS
             for (int i = 0; i < parent.childCount; i++)
             {
                 Transform t = parent.GetChild(i);
-                T comp = t.GetComponent<T>();
+                //T comp = t.GetComponent<T>();
+                T comp = (T)t.GetComponent(typeof(T));
                 if (comp)
                     components[componentIndex++] = comp;
             }
@@ -291,7 +278,7 @@ namespace QS
             for (int i = 0; i < parent.childCount; i++)
             {
                 Transform t = parent.GetChild(i);
-                T comp = t.GetComponent<T>();
+                T comp = (T)t.GetComponent(typeof(T));
                 if (comp)
                     componentCount++;
             }
@@ -519,22 +506,6 @@ namespace QS
             }
             else
                 return false;
-        }
-
-        /// <summary>
-        /// See ControllerInput.FreeMove for explanation
-        /// </summary>
-        /// <param name="processedVrEventInfo"></param>
-        /// <returns></returns>
-        public static Vector3 deprecated_GetOneAxisMovement(VrEventInfo processedVrEventInfo)
-        {
-            Vector3 controllerDir = processedVrEventInfo.ControllerDirection.normalized;
-            Vector3 playerPos = ControllerInput.Instance.PlayerRb.position;
-
-            Vector3 targetPoint = playerPos + controllerDir * ActivitySettings.Asset.playerSpeed * processedVrEventInfo.TouchpadPosition.y;
-            targetPoint.y = playerPos.y;
-
-            return targetPoint;
         }
 
         public static Vector3 GetOneAxisMovement(VrEventInfo processedVrEventInfo)
@@ -827,8 +798,6 @@ namespace QS
 
             if (absDelta >= 180f) // must have crossed over
             {
-                //Debug.LogFormat("Crossover - previous: {0}, current: {1}", previousDegrees, currentDegrees);
-
                 if (currentDegrees < previousDegrees)
                     normalized = (currentDegrees + (360f - previousDegrees)) / 360f;
                 else
@@ -884,7 +853,7 @@ namespace QS
         /// Have an issue here: it never gets a hit on the Graspable and
         /// always (in the case of something on the floor like a broom)
         /// returns the floor collider. Haven't figured out what's going
-        /// on here, as it hits just fine in the main raycast routing
+        /// on here, as it hits just fine in the main raycast routine
         /// when it picks up the Graspable component. No idea why an
         /// independent raycast doesn't get a hit.
         /// </summary>
@@ -897,8 +866,6 @@ namespace QS
 
             if (Physics.RaycastNonAlloc(ray, physicsRaycasts, ActivitySettings.Asset.raycastDistance) > 0)
             {
-                //Debug.DrawRay(ray.origin, ray.direction.normalized * ActivitySettings.Asset.raycastDistance, Color.yellow, 5f);
-
                 Debug.Log("Direct line to: " + physicsRaycasts[0].collider.name);
 
                 if (physicsRaycasts[0].collider.gameObject == g)
@@ -908,7 +875,7 @@ namespace QS
         }
 
         /// <summary>
-        /// Won't work in this project if it has a rigidbody attached. See alt version below
+        /// Won't work if it has a rigidbody attached. See alt version below
         /// </summary>
         /// <returns></returns>
         public static GameObject FirstHit()
@@ -918,8 +885,6 @@ namespace QS
 
             if (Physics.RaycastNonAlloc(ray, physicsRaycasts, ActivitySettings.Asset.raycastDistance) > 0)
             {
-                //Debug.DrawRay(ray.origin, ray.direction.normalized * ActivitySettings.Asset.raycastDistance, Color.yellow, 5f);
-
                 Debug.Log("First hit: " + physicsRaycasts[0].collider.name);
 
                 return physicsRaycasts[0].collider.gameObject;
@@ -946,7 +911,7 @@ namespace QS
 
         /// <summary>
         /// Smooth a rotation such as controller to
-        /// prevent jitter. Single use only, as it
+        /// prevent jitter. Single client attachment only, as it
         /// uses a static buffer for efficiency
         /// </summary>
         /// <param name="rot"></param>

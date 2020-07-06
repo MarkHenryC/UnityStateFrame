@@ -103,7 +103,6 @@ namespace QS
                 if (Physics.Raycast(ControllerInput.Instance.ControllerPosition,
                     ControllerInput.Instance.ControllerDirection, out RaycastHit hitInfo, 10f, receiverHit))
                 {
-                    //Debug.Log("Hit on " + hitInfo.transform.name);
                     outPin.transform.position = hitInfo.point;
                 }
                 DrawLine(PinPosition, outPin.transform.position);
@@ -188,8 +187,6 @@ namespace QS
 
         private void DrawLine(Vector3 a, Vector3 b)
         {
-            //connectionLine.SetPosition(0, a);
-            //connectionLine.SetPosition(1, b);
             Vector3 mid = Vector3.Lerp(a, b, .5f);
             mid.y = Mathf.Min(a.y, b.y) - Sag;
             controlPoints[0] = a;
@@ -268,16 +265,5 @@ namespace QS
 
             return index;
         }
-
-        private void SetControlPoints()
-        {
-            for (int i = 0; i < controlPoints.Length; i++)
-            {
-                controlPoints[i].x += (UnityEngine.Random.value - .5f) / 100f;
-                controlPoints[i].y += (UnityEngine.Random.value - .5f) / 100f;
-                controlPoints[i].z += (UnityEngine.Random.value - .5f) / 100f;
-            }
-        }
-
     }
 }

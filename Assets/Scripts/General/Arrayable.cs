@@ -11,7 +11,7 @@ namespace QS
         public float xOffset, yOffset, zOffset;
         public Vector3 startPos;
         public GameObject template;
-        public bool brickStyle; // Hacky shortcut
+        public bool brickStyle; // Hacky shortcut for brickwall-style stacking
         public AudioClip soundEffect;
 
         private AudioSource audioSource;

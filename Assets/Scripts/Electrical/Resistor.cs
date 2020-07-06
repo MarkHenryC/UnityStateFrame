@@ -31,9 +31,9 @@ namespace QS
         private Connection GetNext(Connection source)
         {
             if (source == a && b)
-                return b.to ?? b.From;
+                return b.to ? b.to : b.From;
             else if (source == b && a)
-                return a.to ?? a.From;
+                return a.to ? a.to : a.From;
             else
                 return null;
         }

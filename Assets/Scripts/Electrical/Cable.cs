@@ -9,15 +9,13 @@ namespace QS
         public Transform objectFrom, objectTo; // For static connectors or connecting objects
         public bool straight;
         public int iterations = 4; // Note even numbers are quicker as no need to copy buffer
-        public float sag = .35f;
+        public float sag = .35f; // simulated hang of cables
 
         private LineRenderer connectionLine;
         private Vector3[] controlPoints;
         private Vector3[] points;
         private int pointCount;
         private Vector3[] buffer; // backbuffer
-
-        private Vector3 pointFrom, pointTo;
 
         private void Awake()
         {
@@ -79,7 +77,6 @@ namespace QS
 
         private void ClearLine()
         {
-            //DrawLine(Vector3.zero, Vector3.zero);
             for (int i = 0; i < connectionLine.positionCount; i++)
                 connectionLine.SetPosition(i, Vector3.zero);
         }
@@ -145,16 +142,5 @@ namespace QS
 
             return index;
         }
-
-        private void SetControlPoints()
-        {
-            for (int i = 0; i < controlPoints.Length; i++)
-            {
-                controlPoints[i].x += (UnityEngine.Random.value - .5f) / 100f;
-                controlPoints[i].y += (UnityEngine.Random.value - .5f) / 100f;
-                controlPoints[i].z += (UnityEngine.Random.value - .5f) / 100f;
-            }
-        }
-
     }
 }
