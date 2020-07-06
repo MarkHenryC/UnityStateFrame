@@ -7,6 +7,9 @@ namespace QS
 {
     /// <summary>
     /// Async handler for all interactions.
+    /// WIP: removing Oculus dependencies
+    /// and leaving enough input code for 
+    /// general testing of modules.
     /// </summary>
     public class ControllerInput : Singleton<ControllerInput>
     {
@@ -88,27 +91,6 @@ namespace QS
 
             vrEventInfo.ClearTemporal();
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            Vector3 localPointerPos;
-            Quaternion localPointerRot;
-
-            OVRInput.Controller activeController = OVRInput.GetActiveController();
-            if (activeController == OVRInput.Controller.LTrackedRemote || activeController == OVRInput.Controller.RTrackedRemote)
-            {
-                localPointerPos = OVRInput.GetLocalControllerPosition(activeController);
-                localPointerRot = OVRInput.GetLocalControllerRotation(activeController);
-                globalPointerPos = mainCam.transform.parent.TransformPoint(localPointerPos);
-                angularAcceleration = OVRInput.GetLocalControllerAngularAcceleration(activeController);
-                globalPointerRot = player.rotation * localPointerRot;
-                connected = true;
-            }
-            
-            globalPointerRot = Utils.SmoothQuaternion(globalPointerRot, lowPassSamples);
-
-            // New: calc after rotation smoothing
-            pointerDir = globalPointerRot * Vector3.forward;
-
-#else
             connected = false;
 
             calcOffset = mainCam.transform.right * controllerOffsetDesktop.x + mainCam.transform.up *
@@ -133,7 +115,6 @@ namespace QS
                 vrEventInfo.Connected = false;
             }
 
-#endif
             if (connected && !vrEventInfo.Connected)
                 vrEventInfo.Connected = true;
 
@@ -145,7 +126,6 @@ namespace QS
             vrEventInfo.ControllerDirection = pointerDir;
             vrEventInfo.AngularAccelleration = angularAcceleration;
 
-#if UNITY_EDITOR
             if (Input.GetMouseButtonDown(0))
             {
                 vrEventInfo.EventType = VrEventInfo.VrEventType.TriggerDown;
@@ -212,45 +192,14 @@ namespace QS
                 OnBackButtonClickUp();
             }
 
-#else
-            if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TriggerDown;
-            }
-            else if (OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TriggerUp;
-            }
-            else if (OVRInput.GetDown(OVRInput.Button.One))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TouchpadClickDown;
-            }
-            else if (OVRInput.GetUp(OVRInput.Button.One))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TouchpadClickUp;
-            }
-            else if (OVRInput.GetDown(OVRInput.Touch.One))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TouchpadTouchDown;
-            }
-            else if (OVRInput.GetUp(OVRInput.Touch.One))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.TouchpadTouchUp;
-            }
-            else if (OVRInput.GetUp(OVRInput.Button.Back))
-            {
-                vrEventInfo.EventType = VrEventInfo.VrEventType.BackButton;
-                OnBackButtonClickUp();
-            }
-#endif
             if (vrEventInfo.EventType == VrEventInfo.VrEventType.TouchpadClickDown)
             {
                 touchdown = true;
-                touchpadCentre.SetActive(touchdown);
+                if (touchpadCentre) touchpadCentre.SetActive(touchdown);
             }
             else if (vrEventInfo.EventType == VrEventInfo.VrEventType.TouchpadClickUp)
             {
-                touchpadCentre.SetActive(touchdown);
+                if (touchpadCentre) touchpadCentre.SetActive(touchdown);
                 touchdown = false;
             }
 
@@ -265,13 +214,8 @@ namespace QS
             vrEventInfo.TouchIsDown = IsTouchpadDown();
             vrEventInfo.TouchIsTouched = IsTouchpadTouched();
 
-#if UNITY_EDITOR
             if (!TouchIsDown) // handles fake touch drag using right MB
                 vrEventInfo.TouchpadPosition = ConvertToTouchpadCoords(Input.mousePosition);
-#else
-            vrEventInfo.TouchpadPosition = OVRInput.Get(OVRInput.Axis2D.PrimaryTouchpad);
-            ShowTouchpadFeedback(vrEventInfo.TouchpadPosition.y);
-#endif
             if (readout && readout.gameObject.activeSelf)
             {
                 if (++periodicFrameCounter % periodicUiUpdate == 0)
@@ -468,20 +412,12 @@ namespace QS
 
         public bool IsTouchpadDown()
         {
-#if UNITY_EDITOR
             return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
-#else
-            return OVRInput.Get(OVRInput.Button.One);
-#endif
         }
 
         public bool IsTouchpadTouched()
         {
-#if UNITY_EDITOR
             return Input.GetMouseButton(1);
-#else
-            return OVRInput.Get(OVRInput.Touch.One);
-#endif
         }
 
         public Vector2 GetTouchpadPosition()

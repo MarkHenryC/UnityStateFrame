@@ -10,7 +10,7 @@ namespace QS
         public InfoPanel infoPanel;
         public ButtonPanel continueButton;
         public Circuit circuit;
-        public GameObject shortCircuit;
+        public GameObject shortCircuit; // SpitzenSparkz
         public Switch switch1, switch2;
         public Block[] blockComponents; // so we can monitor changes for later testing
         public AudioClip voiceover;
@@ -59,7 +59,6 @@ namespace QS
                 infoPanel.Show(false);
             if (continueButton)
                 continueButton.Show(false);
-            //shortCircuit.SetActive(false);
         }
 
         public override void OnFrame(VrEventInfo processedVrEventInfo)
@@ -90,14 +89,17 @@ namespace QS
             {
                 case Circuit.CircuitType.Closed:
                     closedCount++;
-                    infoPanel.SetText("Light on");
+                    if (infoPanel)
+                        infoPanel.SetText("Light on");
                     break;
                 case Circuit.CircuitType.Short:
-                    infoPanel.SetText("Short circuit!");
+                    if (infoPanel)
+                        infoPanel.SetText("Short circuit!");
                     shortCount++;
                     break;
                 case Circuit.CircuitType.Open:
-                    infoPanel.SetText("Light off");
+                    if (infoPanel)
+                        infoPanel.SetText("Light off");
                     break;
             }
 
@@ -208,11 +210,13 @@ namespace QS
 
             Utils.RegisterActivityAndUpdateExperience(points);
 
-            infoPanel.SetText(report + "Points earned: " + ActivitySettings.Asset.currentActivityScore);
-            infoPanel.TryBonus();
+            if (infoPanel)
+            {
+                infoPanel.SetText(report + "Points earned: " + ActivitySettings.Asset.currentActivityScore);
+                infoPanel.TryBonus();
 
-            infoPanel.ShowFor(ActivitySettings.Asset.titleDisplayTime, () => { PostExit(true); });
-
+                infoPanel.ShowFor(ActivitySettings.Asset.titleDisplayTime, () => { PostExit(true); });
+            }
         }
 
         private void Switched1(bool up, Switchable source)
