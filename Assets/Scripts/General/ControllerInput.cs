@@ -402,12 +402,7 @@ namespace QS
 
         public bool IsTriggerDown()
         {
-#if UNITY_EDITOR
-
             return Input.GetMouseButton(0);
-#else
-            return OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger);
-#endif
         }
 
         public bool IsTouchpadDown()
