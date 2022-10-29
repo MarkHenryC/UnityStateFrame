@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace BAW
+namespace QS
 {
 	public class #SCRIPTNAME# : MonoBehaviour 
 	{

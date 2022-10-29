@@ -7,7 +7,7 @@ using UnityEditor;
 // script we need to refer to the target class, but
 // can't use that name here as it'll cause a class
 // with the target class name.
-namespace BAW
+namespace QS
 {
 	[CustomEditor(typeof(#SCRIPTNAME#), true)]
 	public class #SCRIPTNAME#Editor : Editor 

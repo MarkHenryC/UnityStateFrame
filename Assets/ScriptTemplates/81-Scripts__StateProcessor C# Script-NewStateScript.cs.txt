@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BAW
+namespace QS
 {
 	public class #SCRIPTNAME# : StateProcessor 
 	{

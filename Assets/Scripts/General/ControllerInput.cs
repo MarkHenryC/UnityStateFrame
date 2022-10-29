@@ -73,8 +73,6 @@ namespace QS
                 CameraPos = mainCam.transform;
             PointerMode = EnPointerMode.Pointing;
 
-            Debug.Log("Device present? " + UnityEngine.XR.XRDevice.isPresent);
-            Debug.Log("VR enabled? " + UnityEngine.XR.XRSettings.enabled);
 
             ActivitySettings.Asset.ResetCurrentExperienceScores();
 
