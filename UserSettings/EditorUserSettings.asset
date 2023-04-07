@@ -8,9 +8,12 @@ EditorUserSettings:
     RecentlyUsedSceneGuid-0:
       value: 5a5757560101590a5d0c0e24427b5d44434e4c7a7b7a23677f2b4565b7b5353a
       flags: 0
+<<<<<<< HEAD
     RecentlyUsedSceneGuid-1:
       value: 53040c04540c5859585a542442710e444f15197d792975682b79456be6b26439
       flags: 0
+=======
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
     vcSharedLogLevel:
       value: 0d5e400f0650
       flags: 0
