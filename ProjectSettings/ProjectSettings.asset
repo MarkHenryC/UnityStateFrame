@@ -3,8 +3,17 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
+<<<<<<< HEAD
   serializedVersion: 24
   productGUID: 00000000000000000000000000000000
+=======
+<<<<<<< HEAD
+  serializedVersion: 24
+=======
+  serializedVersion: 23
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+  productGUID: 02e27bd8a15e6a04c87e5898622015af
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -154,8 +163,21 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
+<<<<<<< HEAD
   applicationIdentifier: {}
   buildNumber: {}
+=======
+<<<<<<< HEAD
+  applicationIdentifier:
+    Standalone: com.QuiteSensible.QS-State-Framework
+=======
+  applicationIdentifier: {}
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+  buildNumber:
+    Standalone: 0
+    iPhone: 0
+    tvOS: 0
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   overrideDefaultApplicationIdentifier: 0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
@@ -435,7 +457,14 @@ PlayerSettings:
   switchNetworkInterfaceManagerInitializeEnabled: 1
   switchPlayerConnectionEnabled: 1
   switchUseNewStyleFilepaths: 0
+<<<<<<< HEAD
   switchUseLegacyFmodPriorities: 1
+=======
+<<<<<<< HEAD
+  switchUseLegacyFmodPriorities: 1
+=======
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   switchUseMicroSleepForYield: 1
   switchEnableRamDiskSupport: 0
   switchMicroSleepForYieldTime: 25
@@ -535,7 +564,14 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
+<<<<<<< HEAD
   webGLPowerPreference: 2
+=======
+<<<<<<< HEAD
+  webGLPowerPreference: 2
+=======
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   scriptingDefineSymbols: {}
   additionalCompilerArguments: {}
   platformArchitecture: {}
@@ -547,7 +583,14 @@ PlayerSettings:
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
+<<<<<<< HEAD
   selectedPlatform: 0
+=======
+<<<<<<< HEAD
+  selectedPlatform: 0
+=======
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1
@@ -626,7 +669,14 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
+<<<<<<< HEAD
   windowsGamepadBackendHint: 0
+=======
+<<<<<<< HEAD
+  windowsGamepadBackendHint: 0
+=======
+>>>>>>> 2918a4528e7647332ac5be5ea498aa5643500a04
+>>>>>>> 911eebbf611225b40d266e75bb51226ed04a5ecb
   cloudProjectId: 
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
