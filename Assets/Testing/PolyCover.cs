@@ -53,6 +53,11 @@ namespace QS
         private void Deallocate()
         {
             meshRenderer.enabled = false;
+        }
+
+        private void DeallocateBatch()
+        {
+            meshRenderer.enabled = false;
             shrinkAmt.Dispose();
             originalVertices.Dispose();
             modifiedVertices.Dispose();
@@ -74,6 +79,11 @@ namespace QS
 
             CalcQuads();
             CalcVertices();
+        }
+
+        public void SetupBatch()
+        {
+            Setup();
 
             shrinkAmt = new NativeArray<float>(3, Allocator.Persistent);
             // Cache quad centre point
@@ -92,8 +102,8 @@ namespace QS
 
         public void BatchDissolve()
         {
-            Setup();
-            StartCoroutine(CoShrinkBatch(DissolveAmount, DissolveTime, Deallocate));
+            SetupBatch();
+            StartCoroutine(CoShrinkBatch(DissolveAmount, DissolveTime, DeallocateBatch));
         }
 
         public void Restore()
@@ -269,7 +279,7 @@ namespace QS
 
 
         //[BurstCompile(CompileSynchronously = true)]
-        //[BurstCompile]
+        [BurstCompile]
         public struct ProcessingJob : IJobParallelFor
         {
             [ReadOnly]
