@@ -11,38 +11,40 @@ namespace QS
 
         private void OnEnable()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         public void LoadScene(string name)
         {
-            if (LoadEvent != null)
-                LoadEvent.Invoke();
+            LoadEvent?.Invoke();
 
             Debug.Log("Loading scene with fade");
 
             ActivityManager.Instance.FadeOutThen(() =>
-                { UnityEngine.SceneManagement.SceneManager.LoadScene(name); });
+                { SceneManager.LoadScene(name); });
         }
 
         public void LoadScene(string name, bool fade)
         {
-            if (LoadEvent != null)
-                LoadEvent.Invoke();
+            LoadEvent?.Invoke();
 
             if (fade)
             {
                 Debug.LogFormat("LoadScene: calling SceneManager.LoadScene({0}) with with fade via FadeOutThen", name);
 
                 ActivityManager.Instance.FadeOutThen(() =>
-                    { UnityEngine.SceneManagement.SceneManager.LoadScene(name); });
+                    { SceneManager.LoadScene(name); });
             }
             else
             {
                 Debug.LogFormat("LoadScene: calling SceneManager.LoadScene({0}) with no fade", name);
 
-                UnityEngine.SceneManagement.SceneManager.LoadScene(name);
+                SceneManager.LoadScene(name);
             }
         }
 
@@ -50,8 +52,7 @@ namespace QS
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
-            if (UnloadEvent != null)
-                UnloadEvent.Invoke();
+            UnloadEvent?.Invoke();
         }
     }
 }

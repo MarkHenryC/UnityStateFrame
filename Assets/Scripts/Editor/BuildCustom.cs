@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Build;
 using System.IO;
 
 /// <summary>
@@ -102,7 +103,7 @@ namespace QS
                 PlayerSettings.Android.keyaliasPass = "";
             }
 
-            PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, APP_ID);
+            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, APP_ID);
         }
 
         private static string ResolveOutputPath(string subPath, string binaryName)

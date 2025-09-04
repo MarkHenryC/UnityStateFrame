@@ -105,7 +105,7 @@ namespace QS
             return (T)states.SingleOrDefault(state => state.name == obName);
         }
 
-        public virtual void SetVisuals()
+        public virtual void MuteVisuals()
         {
             states = Utils.GetNonExcludedStates<StateProcessor>(transform);
             HideVisuals();

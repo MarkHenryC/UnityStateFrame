@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -61,16 +62,26 @@ namespace QS
         public bool TouchIsDown => IsTouchpadDown();
         public bool TouchIsTouched => IsTouchpadTouched();
 
-        private void Start()
+        IEnumerator Start()
         {
-            mainCam = Camera.main;
+            while (mainCam == null)
+            {
+                mainCam = Camera.main;
+                yield return null;
+            }
+            
             PlayerRb = player.GetComponent<Rigidbody>();
             if (PlayerRb)
                 LockPlayer(true);
             PlayerCollider = player.GetComponent<CapsuleCollider>();
-            CameraPos = player.Find("CenterEyeAnchor");
-            if (!CameraPos)
-                CameraPos = mainCam.transform;
+
+            // Removed. Don't assume Oculus camera
+            //CameraPose = player.Find("CenterEyeAnchor");
+            // ---
+
+            CameraPose = mainCam.transform;
+            if (!CameraPose)
+                CameraPose = mainCam.transform;
             PointerMode = EnPointerMode.Pointing;
 
 
@@ -396,7 +407,7 @@ namespace QS
                 SelectedGrabbables.RemoveAt(index);
         }
 
-        public Transform CameraPos { get; private set; }
+        public Transform CameraPose { get; private set; }
 
         public bool IsTriggerDown()
         {
@@ -574,7 +585,7 @@ namespace QS
                 paused = false;
                 Time.timeScale = 1f;
 
-                QuiteSensible.TrackPlayer trackPlayer = GameObject.FindObjectOfType<QuiteSensible.TrackPlayer>();
+                QuiteSensible.TrackPlayer trackPlayer = GameObject.FindFirstObjectByType<QuiteSensible.TrackPlayer>();
                 if (trackPlayer)
                 {
                     trackPlayer.StopPlay();

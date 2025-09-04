@@ -5,7 +5,7 @@ using System;
 
 namespace QS
 {
-	public class Light : Resistor 
+	public class ElectricLight : Resistor 
 	{
         public DynamicMaterial lightbulb;
         public GameObject pointLight;

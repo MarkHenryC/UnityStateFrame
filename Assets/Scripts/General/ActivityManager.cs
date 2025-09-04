@@ -86,7 +86,19 @@ namespace QS
             activities = Utils.GetNonExcludedActivities<ActivityBase>(transform);
 
             foreach (var a in activities)
-                a.SetVisuals();
+                a.MuteVisuals();
+        }
+
+        /// <summary>
+        /// Added this to reinstate in editor.
+        /// Opposite to ClearVisuals
+        /// </summary>
+        public void DisplayVisuals()
+        {
+            activities = Utils.GetNonExcludedActivities<ActivityBase>(transform);
+
+            foreach (var a in activities)
+                a.MuteVisuals();
         }
 
         public void FadeOutThen(Action a)
